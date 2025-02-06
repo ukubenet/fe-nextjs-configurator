@@ -145,11 +145,12 @@ export default function Home() {
                     </button>
                     <button 
                       onClick={() => handleDelete(app)}
-                      className="text-red-500 hover:text-red-700"
+                      className="text-red-500 hover:text-red-700 mr-2"
                     >
                       Delete
                     </button>
-                    <Link href="/apps/{app}/run" className="text-blue-500 hover:underline mb-4 inline-block">
+
+                    <Link href={`/apps/${app}/run`} className="text-green-500 hover:text-green-700">
                         Run mode
                     </Link>
                   </div>
