@@ -1,4 +1,4 @@
-import { getCatalogDetails } from '@/lib/api/catalog';
+import { getAllCatalogEntities } from '@/lib/api/catalog';
 import { 
   Container, 
   Typography, 
@@ -30,8 +30,8 @@ export default async function CatalogPage({
   params: Promise<{ catalog: string, appName: string }> 
 }) {
   const { catalog, appName } = await params;
-  const catalogDetails = await getCatalogDetails(appName, catalog);
-  const attributeKeys = Object.keys(catalogDetails[0]?.attributes || {});
+  const catalogEntities: CatalogItem[] = await getAllCatalogEntities(appName, catalog);
+  const attributeKeys = Object.keys(catalogEntities[0]?.attributes || {});
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
@@ -58,7 +58,7 @@ export default async function CatalogPage({
             </TableRow>
           </TableHead>
           <TableBody>
-            {catalogDetails.map((item) => (
+            {catalogEntities.map((item) => (
               <TableRow key={item.identifier}>
                 {attributeKeys.map((key) => (
                   <TableCell key={key}>
@@ -81,9 +81,11 @@ export default async function CatalogPage({
         </Table>
       </TableContainer>
       <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
-        <Button variant="contained" color="primary">
-          New
-        </Button>
+        <Link href={`/apps/${appName}/run/catalog/${catalog}/new`} style={{ textDecoration: 'none' }}>
+          <Button variant="contained" color="primary">
+            New
+          </Button>
+        </Link>
       </Box>
     </Container>
   )
