@@ -1,4 +1,3 @@
-
 import { getCatalogDetails } from '@/lib/api/catalog';
 import { 
   Container, 
