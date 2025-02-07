@@ -52,6 +52,11 @@ export default function Home() {
     setApps(apps.filter(app => app !== deletingApp));
   };
 
+  const handleDuplicate = async (duplicatedApp: string) => {
+    await fetch(`http://localhost:4000/v1/api/app/duplicate/${duplicatedApp}`);
+    await fetchApps();
+  };
+
   function startEditing(app: string) {
     setEditingApp(app);
     setEditedApp(app);
@@ -144,14 +149,19 @@ export default function Home() {
                       Edit
                     </button>
                     <button 
+                      onClick={() => handleDuplicate(app)}
+                      className="text-green-500 hover:text-green-700 mr-2"
+                    >
+                      Duplicate
+                    </button>
+                    <button 
                       onClick={() => handleDelete(app)}
                       className="text-red-500 hover:text-red-700 mr-2"
                     >
                       Delete
                     </button>
-
                     <Link href={`/apps/${app}/run`} className="text-green-500 hover:text-green-700">
-                        Run mode
+                        Run Mode
                     </Link>
                   </div>
                 </>
