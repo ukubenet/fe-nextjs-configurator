@@ -1,4 +1,4 @@
-export async function getCatalogDetails(appName: string, catalog: string) {
+export async function getAllCatalogEntities(appName: string, catalog: string) {
   console.log('appName:', appName, 'catalog:', catalog);
   const response = await fetch(
     `http://127.0.0.1:4000/v1/list/${appName}/catalog/${catalog}`,

@@ -20,7 +20,7 @@ import type { App } from '@/types/app'
 export function AppDetails({ app }: { app: App }) {
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
-      <Link href="/apps" style={{ textDecoration: 'none' }}>
+      <Link href="/" style={{ textDecoration: 'none' }}>
         <Button 
           startIcon={<ArrowBackIcon />} 
           sx={{ mb: 4 }}
