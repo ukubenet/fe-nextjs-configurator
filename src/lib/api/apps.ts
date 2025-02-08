@@ -1,6 +1,8 @@
+const API_URL = process.env.API_URL;
+
 export async function getApp(appName: string) {
 //   appName = 'Care Visit Tracker';
-  const response = await fetch(`http://127.0.0.1:4000/v1/api/app/run/${appName}`, {
+  const response = await fetch(`${API_URL}/v1/api/app/run/${appName}`, {
     cache: 'no-store',
     headers: {
         'Accept': 'application/json'
