@@ -3,12 +3,14 @@
 import { redirect } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 
+const API_URL = process.env.API_URL;
+
 export async function createEntity(appName: string, catalog: string, formData: FormData) {
   try {
     const data = Object.fromEntries(formData);
     const entityId = uuidv4();
 
-    const response = await fetch(`http://127.0.0.1:4000/v1/entity/${appName}/catalog/${catalog}`, {
+    const response = await fetch(`${API_URL}/v1/entity/${appName}/catalog/${catalog}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
