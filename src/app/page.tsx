@@ -160,6 +160,9 @@ export default function Home() {
                     >
                       Delete
                     </button>
+                    <Link href={`/apps/${app}/config`} className="text-green-500 hover:text-green-700 mr-2">
+                        Config
+                    </Link>
                     <Link href={`/apps/${app}/run`} className="text-green-500 hover:text-green-700">
                         Run Mode
                     </Link>

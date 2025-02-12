@@ -1,5 +1,3 @@
-'use client'
-
 import { 
   Container, 
   Typography, 
@@ -16,8 +14,9 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import Link from 'next/link'
 import type { App } from '@/types/app'
+import { EntityListTable } from './EntityListTable'
 
-export function AppDetails({ app }: { app: App }) {
+export function AppDetails({ app, mode }: { app: App, mode: string }) {
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Link href="/" style={{ textDecoration: 'none' }}>
@@ -30,68 +29,21 @@ export function AppDetails({ app }: { app: App }) {
       </Link>
 
       <Typography variant="h4" gutterBottom>
-        {app.AppName}
+        {app.AppName}, MODE: {mode}
       </Typography>
 
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h6" gutterBottom>
-          Catalogs
-        </Typography>
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {app.Catalogs.map((catalog) => (
-                <TableRow key={catalog}>
-                  <TableCell>{catalog}</TableCell>
-                  <TableCell>
-                    <Link href={`/apps/${app.AppName}/run/catalog/${catalog}`} passHref legacyBehavior>
-                      <Button variant="contained">
-                        View
-                      </Button>
-                    </Link>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
-
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h6" gutterBottom>
-          Events
-        </Typography>
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {app.Events.map((event) => (
-                <TableRow key={event}>
-                  <TableCell>{event}</TableCell>
-                  <TableCell>
-                    <Link href={`/apps/1/run/event/${event}`} passHref legacyBehavior>
-                      <Button variant="contained">
-                        View
-                      </Button>
-                    </Link>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
+      <EntityListTable
+        appName={app.AppName}
+        entityType="catalog"
+        mode={mode}
+        list={app.Catalogs}
+      />
+      <EntityListTable
+        appName={app.AppName}
+        entityType="event"
+        mode={mode}
+        list={app.Events}
+      />
     </Container>
   )
 }
