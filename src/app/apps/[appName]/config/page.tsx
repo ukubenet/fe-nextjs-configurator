@@ -8,5 +8,5 @@ export default async function AppPage({
 }) {
   const resolvedParams = await params
   const app = await getApp(resolvedParams.appName)
-  return <AppDetails app={app} mode="run"/>
+  return <AppDetails app={app} mode="config" />
 }
