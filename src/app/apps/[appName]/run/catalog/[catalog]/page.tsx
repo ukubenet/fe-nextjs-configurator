@@ -1,4 +1,4 @@
-import { getCatalogDetails } from '@/lib/api/catalog';
+import { getAllCatalogEntities } from '@/lib/api/catalog';
 import { 
   Container, 
   Typography, 
