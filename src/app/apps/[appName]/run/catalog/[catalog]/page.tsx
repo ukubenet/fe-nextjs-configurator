@@ -1,5 +1,7 @@
 import { getAllCatalogEntities } from '@/lib/api/catalog';
-import { 
+import { EntityActions } from './EntityActions';
+import { CatalogItem } from '@/types/app';
+import {
   Container, 
   Typography, 
   Table,
@@ -10,21 +12,12 @@ import {
   TableRow,
   Paper,
   Button,
-  Stack,
   Box
 } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import Link from 'next/link'
 
-interface CatalogItem {
-  entityName: string;
-  entityType: number;
-  identifier: string;
-  attributes: Record<string, string>;
-  transactions: null;
-}
-
-export default async function CatalogPage({ 
+export default async function CatalogPage({
   params,
 }: { 
   params: Promise<{ catalog: string, appName: string }> 
@@ -50,11 +43,19 @@ export default async function CatalogPage({
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow>
+            <TableRow sx={{ backgroundColor: 'primary.main' }}>
               {attributeKeys.map((key) => (
-                <TableCell key={key}>{key}</TableCell>
+                <TableCell key={key} sx={{ 
+                  color: 'white',
+                  fontWeight: 'bold',
+                  fontSize: '1rem'
+                }}>{key}</TableCell>
               ))}
-              <TableCell>Actions</TableCell>
+              <TableCell sx={{ 
+            color: 'white',
+            fontWeight: 'bold',
+            fontSize: '1rem'
+          }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -66,14 +67,11 @@ export default async function CatalogPage({
                   </TableCell>
                 ))}
                 <TableCell>
-                  <Stack direction="row" spacing={1}>
-                    <Button variant="contained" color="primary">
-                      Edit
-                    </Button>
-                    <Button variant="contained" color="error">
-                      Delete
-                    </Button>
-                  </Stack>
+                  <EntityActions 
+                    entityId={item.identifier}
+                    appName={appName}
+                    catalog={catalog}
+                  />
                 </TableCell>
               </TableRow>
             ))}

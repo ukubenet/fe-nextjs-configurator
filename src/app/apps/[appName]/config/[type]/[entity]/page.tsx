@@ -1,5 +1,6 @@
 
-import { getCatalogDetails } from '@/lib/api/catalog';
+import { getAllCatalogEntities } from '@/lib/api/catalog';
+import { CatalogItem } from '@/types/app';
 import { 
   Container, 
   Typography, 
@@ -17,21 +18,13 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import Link from 'next/link'
 
-interface CatalogItem {
-  entityName: string;
-  entityType: number;
-  identifier: string;
-  attributes: Record<string, string>;
-  transactions: null;
-}
-
-export default async function CatalogPage({ 
+export default async function CatalogPage({
   params,
 }: { 
   params: Promise<{ catalog: string, appName: string }> 
 }) {
   const { catalog, appName } = await params;
-  const catalogDetails = await getCatalogDetails(appName, catalog);
+  const catalogDetails: CatalogItem[] = await getAllCatalogEntities(appName, catalog);
   const attributeKeys = Object.keys(catalogDetails[0]?.attributes || {});
 
   return (
