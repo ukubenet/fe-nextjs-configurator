@@ -35,3 +35,19 @@ export async function createEntity(appName: string, catalog: string, formData: F
   
   redirect(`/apps/${appName}/run/catalog/${catalog}`);
 }
+
+export async function deleteEntity(appName: string, catalog: string, entityId: string) {
+  const response = await fetch(
+    `${API_URL}/v1/entity/${appName}/catalog/${catalog}/${entityId}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json'
+      }
+    }
+  );
+  
+  if (!response.ok) {
+    throw new Error('Failed to delete entity');
+  }
+}

@@ -1,6 +1,7 @@
-import { Container, Typography } from '@mui/material';
+import { Container, Typography, CircularProgress, Box } from '@mui/material';
 import { getCatalogEntityMetadata } from '@/lib/api/catalogMetadata';
 import { CatalogForm } from './CatalogForm';
+import { Suspense } from 'react';
 
 export default async function NewCatalogEntityPage({ 
   params,
@@ -15,11 +16,17 @@ export default async function NewCatalogEntityPage({
       <Typography variant="h4" gutterBottom>
         New {metadata.entityName}
       </Typography>
-      <CatalogForm 
-        metadata={metadata}
-        appName={appName}
-        catalog={catalog}
-      />
+      <Suspense fallback={
+        <Box display="flex" justifyContent="center" py={4}>
+          <CircularProgress />
+        </Box>
+      }>
+        <CatalogForm 
+          metadata={metadata}
+          appName={appName}
+          catalog={catalog}
+        />
+      </Suspense>
     </Container>
   )
 }

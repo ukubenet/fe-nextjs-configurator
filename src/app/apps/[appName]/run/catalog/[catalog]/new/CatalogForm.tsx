@@ -7,7 +7,7 @@ import {
   Paper
 } from '@mui/material';
 import Link from 'next/link';
-import { createEntity } from './actions';
+import { createEntity } from '@/lib/api/entityActions';
 
 interface Metadata {
   entityName: string;

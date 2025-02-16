@@ -3,3 +3,11 @@ export interface App {
   Catalogs: string[]
   Events: string[]
 }
+
+export interface CatalogItem {
+  entityName: string;
+  entityType: number;
+  identifier: string;
+  attributes: Record<string, string>;
+  transactions: null;
+}
