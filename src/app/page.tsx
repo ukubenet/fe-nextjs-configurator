@@ -1,8 +1,6 @@
 'use client';
 
-import { App } from "@/types/app";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from 'next/link'
 
 export default function Home() {
@@ -30,7 +28,7 @@ export default function Home() {
     e.preventDefault();
     if (!newApp.trim()) return;
 
-    const response = await fetch(
+    await fetch(
       'http://localhost:4000/v1/api/app/', 
       {
         method: 'PUT',
@@ -71,7 +69,7 @@ export default function Home() {
     e.preventDefault();
     if (!editedApp.trim()) return;
 
-    const response = await fetch(
+    await fetch(
       'http://localhost:4000/v1/api/app/' + editingApp, 
       {
         method: 'PUT',

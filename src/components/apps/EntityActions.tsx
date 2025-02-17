@@ -31,6 +31,7 @@ function EntityActions({
       toast.success(`"${entityName}" has been deleted successfully.`)
       setOpenDialog(false)
     } catch (error) {
+      console.error('Error deleting entity:', error);
       toast.error(`Failed to delete "${entityName}". Please try again.`)
     } finally {
       setLoading(false)
@@ -68,7 +69,7 @@ function EntityActions({
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
-          <DialogContentText>Are you sure you want to delete "{entityName}"?</DialogContentText>
+          <DialogContentText>Are you sure you want to delete &quot;{entityName}&quot;?</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)} color="primary">

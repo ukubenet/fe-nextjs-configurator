@@ -8,6 +8,9 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { createEntity } from '@/lib/api/entityActions';
+import { useNotification } from '@/contexts/NotificationContext';
+import { useActionState, useEffect } from "react";
+import { useRouter } from 'next/navigation';
 
 interface Metadata {
   entityName: string;
@@ -32,12 +35,33 @@ interface CatalogFormProps {
   catalog: string;
 }
 
+interface FormState {
+  success: boolean;
+  message: string;
+}
+
 export function CatalogForm({ metadata, appName, catalog }: CatalogFormProps) {
+  const { setNotification } = useNotification();
+  const router = useRouter();
+  const initialState: FormState = {
+    success: false,
+    message: ''
+  };
+
+  const [state, formAction] = useActionState(createEntity.bind(null, appName, catalog), initialState);
+
+  useEffect(() => {
+    if (state.success) {
+      setNotification(state.message, 'success');
+      router.push(`/apps/${appName}/run/catalog/${catalog}`);
+    }
+  }, [state]);
+
   return (
     <Paper sx={{ p: 3 }}>
       <Box 
         component="form" 
-        action={createEntity.bind(null, appName, catalog)} 
+        action={formAction} 
         sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
       >
         {Object.entries(metadata.attributes).map(([key, value]) => (

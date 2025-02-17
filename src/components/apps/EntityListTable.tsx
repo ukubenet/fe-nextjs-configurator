@@ -1,8 +1,6 @@
 import { 
-  Container, 
   Typography, 
   Box, 
-  Button,
   Table,
   TableBody,
   TableCell,
@@ -11,9 +9,6 @@ import {
   TableRow,
   Paper
 } from '@mui/material'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import Link from 'next/link'
-import type { App } from '@/types/app'
 import EntityActions from './EntityActions';
 
 export function EntityListTable({ appName, entityType, mode, list }: { appName: string; entityType: string; mode: string; list: string[] }) {

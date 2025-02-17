@@ -1,15 +1,7 @@
 import { 
   Container, 
   Typography, 
-  Box, 
   Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper
 } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import Link from 'next/link'

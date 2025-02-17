@@ -1,11 +1,15 @@
 'use server'
 
-import { redirect } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 
 const API_URL = process.env.API_URL;
 
-export async function createEntity(appName: string, catalog: string, formData: FormData) {
+interface FormState {
+  success: boolean;
+  message: string | null;
+}
+
+export async function createEntity(appName: string, catalog: string, prevState: FormState, formData: FormData) {
   try {
     const data = Object.fromEntries(formData);
     const entityId = uuidv4();
@@ -31,9 +35,10 @@ export async function createEntity(appName: string, catalog: string, formData: F
     }
   } catch (error) {
     console.log("Server Error: ", error);
+		return {success: false, message: 'Failed to create entity. Please try again.'};
   }
   
-  redirect(`/apps/${appName}/run/catalog/${catalog}`);
+	return {success: true, message: 'Entity was created successfully!'};
 }
 
 export async function deleteEntity(appName: string, catalog: string, entityId: string) {
