@@ -2,9 +2,9 @@
 
 import { Button, Stack, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { deleteEntity } from '@/lib/api/entityActions';
-import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useNotification } from '@/contexts/NotificationContext';
 
 interface EntityActionsProps {
   entityId: string;
@@ -15,14 +15,16 @@ interface EntityActionsProps {
 export function EntityActions({ entityId, appName, catalog }: EntityActionsProps) {
   const router = useRouter();
   const [openDialog, setOpenDialog] = useState(false);
+  const { showNotification } = useNotification();
 
   const handleDelete = async () => {
     try {
       await deleteEntity(appName, catalog, entityId);
-      toast.success(`${catalog} deleted successfully`);
+      showNotification(`${catalog} deleted successfully`, 'success');
       router.refresh();
     } catch (error) {
-      toast.error(`Failed to delete ${catalog}`);
+      showNotification(`Failed to delete ${catalog}`, 'error');
+      console.error(error);
     }
     setOpenDialog(false);
   };

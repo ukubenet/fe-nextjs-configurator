@@ -1,6 +1,7 @@
 import { getAllCatalogEntities } from '@/lib/api/catalog';
 import { EntityActions } from './EntityActions';
 import { CatalogItem } from '@/types/app';
+import { NotificationHandler } from '@/components/utils/NotificationHandler';
 import {
   Container, 
   Typography, 
@@ -28,6 +29,7 @@ export default async function CatalogPage({
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
+      <NotificationHandler />
       <Link href={`/apps/${appName}/run`} style={{ textDecoration: 'none' }}>
         <Button 
           startIcon={<ArrowBackIcon />} 
