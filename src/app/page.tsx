@@ -1,29 +1,22 @@
-import { DataGrid } from "@mui/x-data-grid";
-import { Button, IconButton, Stack, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import DeleteIcon from "@mui/icons-material/Delete";
 import AppTable from "@/app/AppTable";
+import { API_CONFIG, fetchApi } from "@/config/api";
+import { toast } from "react-toastify";
 
 // Fetch data on the server
 async function getData() {
-  const response = await fetch(
-    'http://localhost:4000/v1/api/app',
-    {
-      headers: { "Content-Type": "application/json", "Accept": "application/json", cache: "no-store" },
+    const response = await fetchApi(
+      `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.app}`
+    );
+    let dataRows = await response?.json();
+    if (!Array.isArray(dataRows)) {
+      toast.error("dataRows must be an array of objects.");
     }
-  );
-  const dataRows = await response.json();
-  if (!Array.isArray(dataRows)) {
-    throw new Error("dataRows must be an array of objects.");
-  }
-
-  return dataRows.map(row => {
-    const newRow = { ...row };
-    newRow["id"] = row;
-    return newRow;
-  });
-  return dataRows;
+    
+    dataRows = dataRows.map((row: string) => {
+      const newRow = {id: row};
+      return newRow;
+    });
+    return dataRows;
 }
 
 export default async function Home() {
