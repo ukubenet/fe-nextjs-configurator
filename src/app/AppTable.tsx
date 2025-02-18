@@ -1,7 +1,7 @@
 "use client"; // Enables client-side interactions
 
-import { useState } from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import { SetStateAction, useState } from "react";
+import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { Button, IconButton, Stack, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -10,37 +10,42 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import SettingsIcon from '@mui/icons-material/Settings';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import Link from "next/link";
+import { toast } from 'react-toastify'
+import { API_CONFIG, fetchApi } from "@/config/api";
 
 
-export default function ClientTable({ initialRows }) {
+export interface AppRow {
+  id: string;
+}
+
+export default function ClientTable({ initialRows }: { initialRows: AppRow[] }) {
   const [rows, setRows] = useState(initialRows);
   const [editOpen, setEditOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState("");
   const [newRow, setNewRow] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
 
-  async function getAppData() {
-    const response = await fetch(
-      'http://localhost:4000/v1/api/app',
-      {
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      }
+  async function getAppData(): Promise<AppRow[]> {
+    setIsLoading(true);
+    const response = await fetchApi(
+      `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.app}`
     );
-    const dataRows = await response.json();
+    let dataRows = await response?.json();
     if (!Array.isArray(dataRows)) {
-      throw new Error("dataRows must be an array of objects.");
+      toast.error("dataRows must be an array of objects.");
     }
-  
-    return dataRows.map(row => {
-      const newRow = { ...row };
-      newRow["id"] = row;
+    
+    dataRows = dataRows.map((row: string) => {
+      const newRow = {id: row};
       return newRow;
     });
+    setIsLoading(false);
     return dataRows;
   }
 
-  const handleEdit = (row) => {
+  const handleEdit = (row: { id: SetStateAction<string>; }) => {
     setSelectedRow(row.id);
     setNewRow(row.id);
     setEditOpen(true);
@@ -58,17 +63,19 @@ export default function ClientTable({ initialRows }) {
     setAddOpen(false);
     setSelectedRow("");
     setNewRow("");
-  };;
+  };
 
   const handleSave = async () => {
+    if (newRow.length < 3 || newRow.length > 50) {
+      toast.error("App name must be between 3 and 50 characters");
+      return;
+    }
+    
     // Make an API call to save the edited data to the database
-    await fetch(
-      `http://localhost:4000/v1/api/app/${selectedRow}`, 
+    await fetchApi(
+      `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.app}${selectedRow}`, 
       {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({ name: newRow }),
       }
     );
@@ -78,29 +85,29 @@ export default function ClientTable({ initialRows }) {
     handleClose();
   };
 
-  const handleDelete = async (id) => {
-    await fetch(`http://localhost:4000/v1/api/app/${id}`, {
+  const handleDelete = async (id: string) => {
+    await fetchApi(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.app}${id}`, {
            method: 'DELETE',
          });
     setRows(rows.filter((row) => row.id !== id));
   };
 
 
-  const handleCopy = async (id) => {
-      await fetch(`http://localhost:4000/v1/api/app/duplicate/${id}`);
+  const handleCopy = async (id: string) => {
+      await fetchApi(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.duplicate}${id}`);
       setRows(await getAppData());
   };
 
-  const handleAddSave = async (e) => {
-    if (!newRow.trim()) return;
+  const handleAddSave = async (e: any) => {
+    if (newRow.length < 3 || newRow.length > 50) {
+      toast.error("App name must be between 3 and 50 characters");
+      return;
+    }
 
-    const response = await fetch(
-      'http://localhost:4000/v1/api/app/', 
+    await fetchApi(
+      `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.app}`, 
       {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({ name: newRow }),
       }
     );
@@ -111,13 +118,15 @@ export default function ClientTable({ initialRows }) {
   };
 
 
-  const handleNewRowChange = (e) => {
+  const handleNewRowChange = (e: { target: { value: any; }; }) => {
     setNewRow( e.target.value || "");
   };
 
 
-  const columns = [
-    { field: "id", headerName: "ID", width: 400 },
+
+
+  const columns: GridColDef<AppRow>[] = [
+    { field: "id", headerName: "ID", width: 400, type: 'string' },
     {
       field: "actions",
       headerName: "Actions",
@@ -125,7 +134,9 @@ export default function ClientTable({ initialRows }) {
       sortable: false,
       headerAlign: "center",
       align: "left",
-      renderCell: (params) => (
+
+      type: 'actions',
+      renderCell: (params: GridRenderCellParams<AppRow>) => (
         <Stack direction="row" spacing={1}>
           <IconButton onClick={() => handleEdit(params.row)}>
             <EditIcon />
@@ -162,7 +173,8 @@ export default function ClientTable({ initialRows }) {
         Add App
       </Button>
 
-      <DataGrid rows={rows} columns={columns} pageSize={5} />
+
+      <DataGrid rows={rows} columns={columns} pageSize={5} loading={isLoading} />
 
       {/* Edit Modal */}
       <Dialog open={editOpen} onClose={handleClose}>
