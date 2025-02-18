@@ -10,7 +10,7 @@ export const API_CONFIG = {
 
 export const fetchApi = async (url: string, options: RequestInit = {}): Promise<Response | undefined> => {
   try {
-    return await fetch(url, {
+    const response = await fetch(url, {
       ...options,
       headers: {
         ...options.headers,
@@ -18,10 +18,10 @@ export const fetchApi = async (url: string, options: RequestInit = {}): Promise<
         'Accept': 'application/json'
       }
     });
-    // if (!response.ok) {
-    //   throw new Error(`HTTP error! status: ${response.status}`);
-    // }
-    // return response;
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response;
   } catch (error) {
     if (error instanceof Error) {
       toast.error(error.message);

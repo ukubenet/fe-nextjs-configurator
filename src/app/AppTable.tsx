@@ -81,7 +81,8 @@ export default function ClientTable({ initialRows }: { initialRows: AppRow[] }) 
     );
 
     // Update UI state
-    setRows(rows.map((row) => (row.id === selectedRow ? {id: newRow} : row)));
+    // setRows(rows.map((row) => (row.id === selectedRow ? {id: newRow} : row)));
+    setRows(await getAppData());
     handleClose();
   };
 
