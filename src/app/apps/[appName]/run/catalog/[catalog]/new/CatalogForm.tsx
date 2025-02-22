@@ -7,7 +7,7 @@ import {
   Paper
 } from '@mui/material';
 import Link from 'next/link';
-import { createEntity } from '@/lib/api/entityActions';
+import { saveEntity } from '@/lib/api/entityActions';
 import { useNotification } from '@/contexts/NotificationContext';
 import { useActionState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
@@ -33,6 +33,7 @@ interface CatalogFormProps {
   metadata: Metadata;
   appName: string;
   catalog: string;
+  initialData?: Record<string, any>;
 }
 
 interface FormState {
@@ -40,7 +41,7 @@ interface FormState {
   message: string;
 }
 
-export function CatalogForm({ metadata, appName, catalog }: CatalogFormProps) {
+export function CatalogForm({ metadata, appName, catalog, initialData }: CatalogFormProps) {
   const { setNotification } = useNotification();
   const router = useRouter();
   const initialState: FormState = {
@@ -48,7 +49,7 @@ export function CatalogForm({ metadata, appName, catalog }: CatalogFormProps) {
     message: ''
   };
 
-  const [state, formAction] = useActionState(createEntity.bind(null, appName, catalog), initialState);
+  const [state, formAction] = useActionState(saveEntity.bind(null, appName, catalog, initialData?.identifier), initialState);
 
   useEffect(() => {
     if (state.success) {
@@ -69,6 +70,7 @@ export function CatalogForm({ metadata, appName, catalog }: CatalogFormProps) {
             key={key}
             label={key}
             name={key}
+            defaultValue={initialData?.attributes?.[key] || ''}
             type={value.type === 'number' ? 'number' : 'text'}
             required
             fullWidth
@@ -82,7 +84,7 @@ export function CatalogForm({ metadata, appName, catalog }: CatalogFormProps) {
             </Button>
           </Link>
           <Button type="submit" variant="contained" color="primary">
-            Create
+            Save
           </Button>
         </Box>
       </Box>
