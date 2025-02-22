@@ -5,6 +5,7 @@ import { deleteEntity } from '@/lib/api/entityActions';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useNotification } from '@/contexts/NotificationContext';
+import Link from 'next/link'
 
 interface EntityActionsProps {
   entityId: string;
@@ -32,9 +33,11 @@ export function EntityActions({ entityId, appName, catalog }: EntityActionsProps
   return (
     <>
       <Stack direction="row" spacing={1}>
-        <Button variant="contained" color="primary">
-          Edit
-        </Button>
+        <Link href={`/apps/${appName}/run/catalog/${catalog}/edit/${entityId}`} style={{ textDecoration: 'none' }}>
+          <Button variant="contained" color="primary">
+            Edit
+          </Button>
+        </Link>
         <Button 
           variant="contained" 
           color="error"

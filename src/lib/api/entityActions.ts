@@ -9,12 +9,12 @@ interface FormState {
   message: string | null;
 }
 
-export async function createEntity(appName: string, catalog: string, prevState: FormState, formData: FormData) {
+export async function saveEntity(appName: string, catalog: string, id?: string, prevState: FormState, formData: FormData) {
   try {
     const data = Object.fromEntries(formData);
-    const entityId = uuidv4();
+    const entityId = id || uuidv4();
 
-    const response = await fetch(`${API_URL}/v1/entity/${appName}/catalog/${catalog}`, {
+		const response = await fetch(`${API_URL}/v1/entity/${appName}/catalog/${catalog}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -29,16 +29,16 @@ export async function createEntity(appName: string, catalog: string, prevState: 
       })
     });
 
-    if (!response.ok) {
+		if (!response.ok) {
       const errorData = await response.json();
       throw new Error(`Failed to create entity: ${errorData.message}`);
     }
   } catch (error) {
     console.log("Server Error: ", error);
-		return {success: false, message: 'Failed to create entity. Please try again.'};
+		return {success: false, message: 'Failed to save entity. Please try again.'};
   }
   
-	return {success: true, message: 'Entity was created successfully!'};
+	return {success: true, message: 'Entity was saved successfully!'};
 }
 
 export async function deleteEntity(appName: string, catalog: string, entityId: string) {
@@ -55,4 +55,22 @@ export async function deleteEntity(appName: string, catalog: string, entityId: s
   if (!response.ok) {
     throw new Error('Failed to delete entity');
   }
+}
+
+export async function getEntityById(appName: string, catalog: string, entityId: string) {
+  const response = await fetch(
+    `${API_URL}/v1/entity/${appName}/catalog/${catalog}/${entityId}`,
+    {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    }
+  );
+  console.log("Response: ", response);
+  if (response.status !== 302) {
+    throw new Error('Failed to get entity by ID');
+  }
+
+	return await response.json();
 }
