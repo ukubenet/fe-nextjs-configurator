@@ -11,14 +11,14 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import Link from "next/link";
 import { toast } from 'react-toastify'
-import { API_CONFIG, fetchApi } from "@/config/api";
+import { API_ENDPOINTS, fetchApi, getSingleColumn } from "@/config/api";
 
 
 export interface AppRow {
   id: string;
 }
 
-export default function ClientTable({ initialRows }: { initialRows: AppRow[] }) {
+export default function AppList({ initialRows }: { initialRows: AppRow[] }) {
   const [rows, setRows] = useState(initialRows);
   const [editOpen, setEditOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
@@ -29,18 +29,7 @@ export default function ClientTable({ initialRows }: { initialRows: AppRow[] }) 
 
   async function getAppData(): Promise<AppRow[]> {
     setIsLoading(true);
-    const response = await fetchApi(
-      `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.app}`
-    );
-    let dataRows = await response?.json();
-    if (!Array.isArray(dataRows)) {
-      toast.error("dataRows must be an array of objects.");
-    }
-    
-    dataRows = dataRows.map((row: string) => {
-      const newRow = {id: row};
-      return newRow;
-    });
+    const dataRows = await getSingleColumn(API_ENDPOINTS.APP);
     setIsLoading(false);
     return dataRows;
   }
@@ -73,7 +62,7 @@ export default function ClientTable({ initialRows }: { initialRows: AppRow[] }) 
     
     // Make an API call to save the edited data to the database
     await fetchApi(
-      `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.app}${selectedRow}`, 
+      `${API_ENDPOINTS.APP}${selectedRow}`, 
       {
         method: 'PUT',
         body: JSON.stringify({ name: newRow }),
@@ -87,7 +76,7 @@ export default function ClientTable({ initialRows }: { initialRows: AppRow[] }) 
   };
 
   const handleDelete = async (id: string) => {
-    await fetchApi(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.app}${id}`, {
+    await fetchApi(`${API_ENDPOINTS.APP}${id}`, {
            method: 'DELETE',
          });
     setRows(rows.filter((row) => row.id !== id));
@@ -95,7 +84,7 @@ export default function ClientTable({ initialRows }: { initialRows: AppRow[] }) 
 
 
   const handleCopy = async (id: string) => {
-      await fetchApi(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.duplicate}${id}`);
+      await fetchApi(`${API_ENDPOINTS.APP}${id}`);
       setRows(await getAppData());
   };
 
@@ -106,7 +95,7 @@ export default function ClientTable({ initialRows }: { initialRows: AppRow[] }) 
     }
 
     await fetchApi(
-      `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.app}`, 
+      `${API_ENDPOINTS.APP}`, 
       {
         method: 'PUT',
         body: JSON.stringify({ name: newRow }),
@@ -134,7 +123,7 @@ export default function ClientTable({ initialRows }: { initialRows: AppRow[] }) 
       width: 300,
       sortable: false,
       headerAlign: "center",
-      align: "left",
+      align: "center",
 
       type: 'actions',
       renderCell: (params: GridRenderCellParams<AppRow>) => (
@@ -189,8 +178,8 @@ export default function ClientTable({ initialRows }: { initialRows: AppRow[] }) 
         </DialogActions>
       </Dialog>
 
-        {/* Add New Row Modal */}
-        <Dialog open={addOpen} onClose={handleClose}>
+      {/* Add New Row Modal */}
+      <Dialog open={addOpen} onClose={handleClose}>
         <DialogTitle>Add New Row</DialogTitle>
         <DialogContent>
           <TextField margin="dense" label="Name" name="name" fullWidth value={newRow} onChange={handleNewRowChange} />
