@@ -56,7 +56,7 @@ export default async function AppPage({
         <Typography variant="h6" gutterBottom>
           Events
         </Typography>
-        <AppConfigList initialRows={catalogList} appName={resolvedParams.appName} entityType="event" />
+        <AppConfigList initialRows={eventList} appName={resolvedParams.appName} entityType="event" />
       </Box>
     </Container>
   )

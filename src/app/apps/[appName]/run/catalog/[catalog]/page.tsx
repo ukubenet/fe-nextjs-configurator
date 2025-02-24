@@ -54,10 +54,10 @@ export default async function CatalogPage({
                 }}>{key}</TableCell>
               ))}
               <TableCell sx={{ 
-            color: 'white',
-            fontWeight: 'bold',
-            fontSize: '1rem'
-          }}>Actions</TableCell>
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: '1rem'
+              }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

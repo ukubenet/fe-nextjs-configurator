@@ -15,14 +15,14 @@ export function EntityListTable({ appName, entityType, mode, list }: { appName: 
   return (
     <Box sx={{ mb: 4 }}>
       <Typography variant="h6" gutterBottom>
-        {entityType}
+        {`${entityType.charAt(0).toUpperCase() + entityType.slice(1)}s`}
       </Typography>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Actions</TableCell>
+            <TableRow sx={{ backgroundColor: 'primary.main' }}>
+              <TableCell sx={{ color: 'white', fontWeight: 'bold', fontSize: '1rem' }}>Name</TableCell>
+              <TableCell sx={{ color: 'white', fontWeight: 'bold', fontSize: '1rem' }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
