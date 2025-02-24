@@ -11,3 +11,11 @@ export interface CatalogItem {
   attributes: Record<string, string>;
   transactions: null;
 }
+
+export interface EventItem {
+  entityName: string;
+  entityType: number;
+  identifier: string;
+  attributes: Record<string, string>;
+  transactions: null;
+}
