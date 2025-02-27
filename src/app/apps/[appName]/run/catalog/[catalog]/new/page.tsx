@@ -1,5 +1,5 @@
 import { Container, Typography, CircularProgress, Box } from '@mui/material';
-import { getCatalogEntityMetadata } from '@/lib/api/catalogMetadata';
+import { getEntityMetadata } from '@/lib/api/entityMetadata';
 import { CatalogForm } from './CatalogForm';
 import { Suspense } from 'react';
 
@@ -9,7 +9,7 @@ export default async function NewCatalogEntityPage({
   params: Promise<{ catalog: string, appName: string }> 
 }) {
   const { catalog, appName } = await params;
-  const metadata = await getCatalogEntityMetadata(appName, catalog);
+  const metadata = await getEntityMetadata(appName, 'catalog', catalog);
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>

@@ -1,5 +1,5 @@
 import { Container, Typography, CircularProgress, Box } from '@mui/material';
-import { getCatalogEntityMetadata } from '@/lib/api/catalogMetadata';
+import { getEntityMetadata } from '@/lib/api/entityMetadata';
 import { getEntityById } from '@/lib/api/entityActions';
 import { CatalogForm } from '../../new/CatalogForm';
 import { Suspense } from 'react';
@@ -10,7 +10,7 @@ export default async function EditCatalogEntityPage({
   params: Promise<{ catalog: string, appName: string, id: string }> 
 }) {
   const { catalog, appName, id } = await params;
-  const metadata = await getCatalogEntityMetadata(appName, catalog);
+  const metadata = await getEntityMetadata(appName, 'catalog', catalog);
   const entityData = await getEntityById(appName, catalog, id);
 
   return (
