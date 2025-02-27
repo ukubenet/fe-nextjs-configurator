@@ -6,6 +6,7 @@ import { IconButton, Button } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
+import Link from 'next/link'
 
 interface EntityListProps {
   appName: string
@@ -106,15 +107,17 @@ export function EntityList({ appName, event, eventEntities }: EntityListProps) {
 
   return (
     <>
-      <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={handleAdd}
-          sx={{ mb: 2 }}
-        >
-          Add Event
-      </Button>
-        
+      <Link href={`/apps/${appName}/run/event/${event}/new`} style={{ textDecoration: 'none' }}>
+        <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={handleAdd}
+            sx={{ mb: 2 }}
+          >
+            Add Event
+        </Button>
+      </Link>
+
       <div style={{ height: 400, width: '100%', marginTop: '20px' }}>
         <DataGrid
           rows={rows}
