@@ -58,9 +58,11 @@ export default function AppConfigList({ appName, entityType, initialRows }: { ap
       type: 'actions',
       renderCell: (params: GridRenderCellParams<AppRow>) => (
         <Stack direction="row" spacing={1}>
-          <IconButton >
-            <EditIcon />
-          </IconButton>
+           <Link color="gray" href={`/apps/${appName}/config/edit/${entityType}/${params.row.id}`}>
+            <IconButton >
+              <EditIcon />
+            </IconButton>
+          </Link>
           <IconButton >
             <ContentCopyIcon onClick={() => handleCopy(params.row.id)} />
           </IconButton>
