@@ -1,19 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-function MetadataAttributes({ entity }) {
-  const [formData, setFormData] = useState({
-    entityName: entity.EntityName,
-    attributes: {},
-    search: {},
-    transactions: {},
-  });
+function MetadataAttributes({ attributes }) {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
+    // setFormData((prev) => ({
+    //   ...prev,
+    //   [name]: type === 'checkbox' ? checked : value,
+    // }));
   };
 
 
@@ -25,7 +19,7 @@ function MetadataAttributes({ entity }) {
         <thead>
           <tr><td>Attribute</td><td>Type</td><td></td></tr>
         </thead>
-        {Object.entries(entity.Attributes).map(([name, attribute]) => (
+        {Object.entries(attributes).map(([name, attribute]) => (
         <tr className="attribute-main-row" key={name}>
           <td>
             <input name="attribute[]" value={name} className="attribute-name" required onChange={handleChange}/>

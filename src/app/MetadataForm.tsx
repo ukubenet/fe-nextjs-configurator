@@ -1,15 +1,20 @@
+"use client"
 import React, { useState, useEffect, useCallback } from 'react';
+import MetadataAttributes from './MetadataAttributes';
+import { EditMode, Metadata } from '@/types/app';
+import { 
+  Box,
+  TextField,
+  Button,
+  Paper,
+  Typography
+} from '@mui/material';
 
-function MetadataForm({ entity, entityType, appName, attributeTypes, references, balances, template }) {
-  const [formData, setFormData] = useState({
-    entityName: entity.EntityName,
-    attributes: {},
-    customTemplate: template,
-    search: {},
-    transactions: {},
-  });
+function MetadataForm({ entity, entityType, mode }: { entity: Metadata; entityType: string; mode:  EditMode}) {
+  console.log("MetadataForm - entity:", entity);
+  const [formData, setFormData] = useState(entity);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -17,12 +22,13 @@ function MetadataForm({ entity, entityType, appName, attributeTypes, references,
     }));
   };
 
-  const handleFormSubmit = async (e) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    document.getElementById('submitButton').disabled = true;
+    const submitButton = document.getElementById('submitButton') as HTMLButtonElement;
+    submitButton.disabled = true;
     try {
       const response = await fetch(
-        `/v1/metadata/api/\${appName}/\${entityType}`,
+        `/v1/metadata/api/${appName}/${entityType}`,
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -30,60 +36,82 @@ function MetadataForm({ entity, entityType, appName, attributeTypes, references,
         },
       );
       if (response.status === 201) {
-        window.location.href = `/v1/app/config/\${appName}`;
+        window.location.href = `/v1/app/config/${appName}`;
       } else {
-        console.error(`Status: \${response.status}`);
-        document.getElementById('submitButton').disabled = false;
+        console.error(`Status: ${response.status}`);
+        submitButton.disabled = false;
       }
     } catch (error) {
       console.error(error);
-      document.getElementById('submitButton').disabled = false;
+      submitButton.disabled = false;
     }
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleFormSubmit(e);
+  };
+
+  const handleAttributeChange = (attributeName: string, field: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      attributes: {
+        ...prev.attributes,
+        [attributeName]: {
+          ...prev.attributes[attributeName],
+          [field]: value,
+        },
+      },
+    }));
+  };
+
   return (
-    <form id="metadata-form" onSubmit={handleFormSubmit}>
-      <div>
-        <button id="submitButton">Submit</button>
-      </div>
-      <input
-        type="hidden"
-        name="entity-name"
-        value={formData.entityName}
-        onChange={handleChange}
-      />
-      <h3>Attributes</h3>
-      <table id="attributes-table" border="1">
-        <thead>
-          <tr><td>Attribute</td><td>Type</td><td></td></tr>
-        </thead>
-        {Object.entries(entity.Attributes).map(([name, attribute]) => (
-        <tr className="attribute-main-row" key={name}>
-          <td>
-            <input name="attribute[]" value={name} className="attribute-name" required onChange={handleChange}/>
-          </td>
-          <td>
-            <select name="attribute_type[]" className="attribute_type" onChange={handleChange}>
-              {attributeTypes.map((option) => (
-                <option value={option} key={option} selected={attribute.type === option}>{option}</option>
-              ))}
-            </select>
-          </td>
-          <td>
-            <button type="button" onClick={() => {/* Add delete logic */}}>Delete</button>
-          </td>
-        </tr>
+    <Paper elevation={3} sx={{ p: 3, maxWidth: 600, mx: 'auto' }}>
+      <Typography variant="h5" gutterBottom>
+        {mode === 'edit' ? 'Edit' : 'Create New'} {entityType}
+      </Typography>
+      <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+        <TextField
+          fullWidth
+          label="Entity Name"
+          value={formData?.entityName}
+          InputLabelProps={{ shrink: true }}
+          onChange={handleChange}
+          margin="normal"
+        />
+        
+        <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
+          Attributes
+        </Typography>
+        
+        {Object.entries(entity.attributes).map(([attributeName, attributeType]) => (
+          <Box key={attributeName} sx={{ display: 'flex', gap: 2, mb: 2 }}>
+            <TextField
+              label="Attribute Name"
+              value={attributeName}
+              onChange={(e) => handleAttributeChange(attributeName, 'name', e.target.value)}
+              size="small"
+            />
+            <TextField
+              label="Type"
+              value={attributeType.type}
+              onChange={(e) => handleAttributeChange(attributeName, 'type', e.target.value)}
+              size="small"
+            />
+          </Box>
         ))}
-      </table>
 
-      <div><button type="button" id="new-attribute">New Attribute</button></div>
-
-      {/* Similar structure for Indexes and Transactions go here */}
-
-      <div>
-        <button id="submitButton">Submit</button>
-      </div>
-    </form>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          sx={{ mt: 3 }}
+          id="submitButton"
+        >
+          {mode === 'edit' ? 'Save' : 'Create'}
+        </Button>
+      </Box>
+    </Paper>
   );
 }
 
