@@ -22,7 +22,7 @@ export interface EventItem {
 
 export interface Metadata {
     entityName: string,
-    attributes: Map<string, any>,
+    attributes: [string, any][],
     templates: any,
     search: any,
     transactions: any,

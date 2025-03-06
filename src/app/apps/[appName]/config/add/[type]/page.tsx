@@ -1,39 +1,14 @@
-"use client";
-import MetadataForm from "@/app/MetadataForm";
-import React, { useEffect } from "react";
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query'
-import Link from 'next/link';
-import { Button, Container } from '@mui/material';
+
+import AddMetadataForm from "@/app/AddMetadataForm";
+
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Metadata } from "@/types/app";
+import { Button, Container, Link } from "@mui/material";
 
 
-export default function AddItem({
-  params,
-}: {
-  params: { appName: string; type: string };
+export default async function Add({ params }: { 
+  params: Promise<{ appName: string; type: string; entityName: string }>
 }) {
-  const { appName, type } = React.use(params);
-
-  return (
-      <AddMetadataForm params={{ appName, type }} />
-  )
-}
-
-
-
-function AddMetadataForm({
-  params,
-}: {
-  params: { appName: string; type: string };
-}) {
-  const { appName, type } = params;
+  const {appName, type} = await params; // Resolve before passing
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
@@ -45,7 +20,9 @@ function AddMetadataForm({
           Back to App Config
         </Button>
       </Link>
-      <MetadataForm entityType={type} entity={{entityName: "", attributes: new Map()}} mode="add" />
+      
+      <AddMetadataForm appName={appName} entityType={type}  />
+    
     </Container>
   );
 }

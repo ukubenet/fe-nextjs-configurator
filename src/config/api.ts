@@ -20,8 +20,7 @@ export const API_ENDPOINTS = {
   METADATA_COPY: (appName: string, entityType: string, entityName: string) => `${API_BASE_URL}/v1/metadata/api/copy/${appName}/${entityType}/${entityName}`,
 }; 
 
-export const fetchApi = async (url: string, options: RequestInit = {}): Promise<Response | undefined> => {
-  try {
+export const fetchApi = async (url: string, options: RequestInit = {}): Promise<Response> => {
     const response = await fetch(url, {
       ...options,
       headers: {
@@ -34,14 +33,6 @@ export const fetchApi = async (url: string, options: RequestInit = {}): Promise<
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     return response;
-  } catch (error) {
-    if (error instanceof Error) {
-      console.log(error.message);
-    } else {
-      console.log('An unknown error occurred');
-    }
-    return undefined;
-  }
 }
 
 export async function getSingleColumn(url: string) {
