@@ -58,9 +58,11 @@ export default function AppConfigList({ appName, entityType, initialRows }: { ap
       type: 'actions',
       renderCell: (params: GridRenderCellParams<AppRow>) => (
         <Stack direction="row" spacing={1}>
-          <IconButton >
-            <EditIcon />
-          </IconButton>
+          <Link color="gray" href={`/apps/${appName}/config/edit/${entityType}/${params.row.id}`}>
+            <IconButton >
+              <EditIcon />
+            </IconButton>
+          </Link>
           <IconButton >
             <ContentCopyIcon onClick={() => handleCopy(params.row.id)} />
           </IconButton>
@@ -84,13 +86,15 @@ export default function AppConfigList({ appName, entityType, initialRows }: { ap
 
   return (
     <div style={{ height: 400, width: "100%" }}>
-      <Button
-        variant="contained"
-        startIcon={<AddIcon />}
-        style={{ marginBottom: "10px" }}
-      >
-        Add Entity
-      </Button>
+      <Link color="gray" href={`/apps/${appName}/config/add/${entityType}`}>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          style={{ marginBottom: "10px" }}
+        >
+          Add Entity
+        </Button>
+      </Link>
 
       <DataGrid rows={rows} columns={columns} pageSize={5} loading={isLoading}  />
     </div>

@@ -19,3 +19,13 @@ export interface EventItem {
   attributes: Record<string, string>;
   transactions: null;
 }
+
+export interface Metadata {
+    entityName: string,
+    attributes: [string, any][],
+    templates: any,
+    search: any,
+    transactions: any,
+};
+
+export type EditMode = 'edit' | 'add'
