@@ -14,6 +14,7 @@ const API_BASE_URL = process.env.API_URL || "http://localhost:4000";
 export const API_ENDPOINTS = {
   APP: `${API_BASE_URL}/v1/api/app/`,
   APP_DUPLICATE: `${API_BASE_URL}/v1/api/app/duplicate/`,
+  ATTRIBUTE_TYPES: `${API_BASE_URL}/v1/attribute-types`,
   METADATA_LIST: (appName: string, entityType: string) => `${API_BASE_URL}/v1/metadata/api/list/${appName}/${entityType}`,
   METADATA: (appName: string, entityType: string, entityName: string) => `${API_BASE_URL}/v1/metadata/api/${appName}/${entityType}/${entityName}`,
   METADATA_ENTITY_GET: (appName: string, entityType: string, entityName: string) => `${API_BASE_URL}/v1/metadata/api/get/${appName}/${entityType}/${entityName}`,

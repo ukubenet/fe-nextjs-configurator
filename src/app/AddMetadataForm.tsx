@@ -1,23 +1,24 @@
 "use client"
-import React, { useState, useEffect, useCallback } from 'react';
-import MetadataAttributes from './MetadataAttributes';
-import { EditMode, Metadata } from '@/types/app';
-import { 
-  Box,
-  TextField,
-  Button,
-  Paper,
-  Typography,
-  IconButton,
-  Stack
-} from '@mui/material';
+import { Metadata } from '@/types/app';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from "@mui/icons-material/Delete";
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { API_ENDPOINTS, fetchApi } from '@/config/api';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import {
+  Box,
+  Button,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  Stack,
+  TextField,
+  Typography
+} from '@mui/material';
+import React, { useState } from 'react';
 
-function AddMetadataForm({ appName, entityType }: { appName: string; entityType: string }) {
+function AddMetadataForm({ appName, entityType, attributeTypes }: { appName: string; entityType: string, attributeTypes: string[] }) {
   
   const [entity, setEntity] = useState({entityName: "", attributes: []} as unknown as Metadata);
   
@@ -119,12 +120,15 @@ function AddMetadataForm({ appName, entityType }: { appName: string; entityType:
               onChange={(e) => handleAttributeNameChange(index, e.target.value)}
               size="small"
             />
-            <TextField
+            <Select
               label="Type"
               value={attribute[1].type}
               onChange={(e) => handleAttributeTypeChange(index, e.target.value)}
-              size="small"
-            />
+            >
+              {attributeTypes.map((type) => (
+                <MenuItem key={type} value={type}>{type}</MenuItem>
+              ))}
+            </Select>
           <Stack direction="column" spacing={0.5} alignItems="center">
             <IconButton size="small" disabled={index === 0}>
               <KeyboardArrowUpIcon fontSize="small" onClick={() => handleSwapAttribute(index - 1, index)} />
