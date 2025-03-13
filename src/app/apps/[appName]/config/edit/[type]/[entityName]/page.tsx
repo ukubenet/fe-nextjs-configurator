@@ -1,5 +1,5 @@
 
-import EditMetadataForm from "@/app/EditMetadataForm";
+import EditMetadataForm from "@/components/config/EditMetadataForm";
 import { API_ENDPOINTS, fetchApi } from "@/config/api";
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';

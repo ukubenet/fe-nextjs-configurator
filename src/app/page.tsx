@@ -1,4 +1,4 @@
-import AppList from "@/app/AppList";
+import AppList from "@/components/apps/AppList";
 import { API_ENDPOINTS, getSingleColumn } from "@/config/api";
 import { toast } from "react-toastify";
 

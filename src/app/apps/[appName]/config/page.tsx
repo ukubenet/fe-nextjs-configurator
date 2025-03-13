@@ -20,7 +20,7 @@ import {
 } from '@mui/material'
 import EntityActions from '../../../../components/apps/EntityActions';
 import { Key, ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from 'react'
-import AppConfigList from '@/app/AppConfigList'
+import AppConfigList from '@/components/config/AppConfigList'
 import { API_ENDPOINTS, getSingleColumn } from '@/config/api'
 
 export default async function AppPage({ 
