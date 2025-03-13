@@ -9,7 +9,9 @@ import {
   Paper,
   Typography,
   IconButton,
-  Stack
+  Stack,
+  Select,
+  MenuItem
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -17,7 +19,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { API_ENDPOINTS, fetchApi } from '@/config/api';
 
-function EditMetadataForm({ appName, entityType, entityName }: { appName: string; entityType: string, entityName: string }) {
+function EditMetadataForm({ appName, entityType, entityName, attributeTypes }: { appName: string; entityType: string, entityName: string, attributeTypes: string[] }) {
   
   const [entity, setEntity] = useState(null as unknown as Metadata);
   const [loading, setLoading] = useState(true);
@@ -147,12 +149,15 @@ function EditMetadataForm({ appName, entityType, entityName }: { appName: string
               onChange={(e) => handleAttributeNameChange(index, e.target.value)}
               size="small"
             />
-            <TextField
+            <Select
               label="Type"
               value={attribute[1].type}
               onChange={(e) => handleAttributeTypeChange(index, e.target.value)}
-              size="small"
-            />
+            >
+              {attributeTypes.map((type) => (
+                <MenuItem key={type} value={type}>{type}</MenuItem>
+              ))}
+            </Select>
           <Stack direction="column" spacing={0.5} alignItems="center">
             <IconButton size="small" disabled={index === 0}>
               <KeyboardArrowUpIcon fontSize="small" onClick={() => handleSwapAttribute(index - 1, index)} />
@@ -181,8 +186,6 @@ function EditMetadataForm({ appName, entityType, entityName }: { appName: string
           </IconButton>
         </Box>
         
-        
-
         <Button
           type="submit"
           variant="contained"
