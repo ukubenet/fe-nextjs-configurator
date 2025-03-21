@@ -1,6 +1,7 @@
-import { EntityFormClient } from './EntityFormClient'
+import { EntityFormClient } from '@/components/apps/event/EntityFormClient'
 import { getEntityMetadata } from '@/lib/api/entityMetadata'
 import { getAllCatalogEntities } from '@/lib/api/catalog';
+import { getAllEventEntities } from '@/lib/api/event';
 
 interface EventFormContainerProps {
   appName: string
@@ -20,7 +21,13 @@ export async function EventFormContainer({ appName, event }: EventFormContainerP
     await Promise.all(
       referenceAttrs.map(async ([key, value]: [string, any]) => {
         try {
-          referenceOptions[key] = await getAllCatalogEntities(appName, (value as any).reference)
+          if (value.referenceType === 'catalog') {
+            referenceOptions[key] = await getAllCatalogEntities(appName, (value as any).reference)
+          } else if (value.referenceType === 'event') {
+            referenceOptions[key] = await getAllEventEntities(appName, (value as any).reference)
+          } else {
+            referenceOptions[key] = []
+          }
         } catch (error) {
           console.error(`Error fetching options for ${key}:`, error)
           referenceOptions[key] = []
