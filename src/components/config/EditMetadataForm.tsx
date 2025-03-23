@@ -11,6 +11,10 @@ import {
 import React, { useEffect, useState } from 'react';
 import MetadataAttributes from './MetadataAttributes';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AppProvider } from './AppContext';
+const queryClient = new QueryClient();
+
 function EditMetadataForm({ appName, entityType, entityName, attributeTypes }: { appName: string; entityType: string, entityName: string, attributeTypes: string[] }) {
   
   const [entity, setEntity] = useState(null as unknown as Metadata);
@@ -72,12 +76,16 @@ function EditMetadataForm({ appName, entityType, entityName, attributeTypes }: {
           Attributes
         </Typography>
 
-        <MetadataAttributes 
-          attributes={entity.attributes}
-          setEntity={setEntity}
-          entity={entity}
-          attributeTypes={attributeTypes}
-        />
+        <AppProvider appName={appName}>
+          <QueryClientProvider client={queryClient}>
+            <MetadataAttributes 
+              attributes={entity.attributes}
+              setEntity={setEntity}
+              entity={entity}
+              attributeTypes={attributeTypes}
+            />
+          </QueryClientProvider>
+        </AppProvider>
         
         <Button
           type="submit"

@@ -1,27 +1,14 @@
 
-import { getApp } from '@/lib/api/apps'
-import { 
-  Container, 
-  Typography, 
-  Button,
-} from '@mui/material'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import Link from 'next/link'
-import type { App } from '@/types/app'
-import {  
-  Box, 
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper
-} from '@mui/material'
-import EntityActions from '../../../../components/apps/EntityActions';
-import { Key, ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from 'react'
 import AppConfigList from '@/components/config/AppConfigList'
 import { API_ENDPOINTS, getSingleColumn } from '@/config/api'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import {
+  Box,
+  Button,
+  Container,
+  Typography,
+} from '@mui/material'
+import Link from 'next/link'
 
 export default async function AppPage({ 
   params 
