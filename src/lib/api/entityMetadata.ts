@@ -12,10 +12,6 @@ export async function getEntityMetadata(appName: string, type: string, entityNam
         }
       }
     );
-
-    if (response.status !== 302) {
-      throw new Error('Failed to fetch catalog entity metadata');
-    }
   
     return await response.json();
   }
