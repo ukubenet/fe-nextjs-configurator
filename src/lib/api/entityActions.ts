@@ -57,9 +57,9 @@ export async function deleteEntity(appName: string, catalog: string, entityId: s
   }
 }
 
-export async function getEntityById(appName: string, catalog: string, entityId: string) {
+export async function getEntityById(appName: string, type: string, catalog: string, entityId: string) {
   const response = await fetch(
-    `${API_URL}/v1/entity/${appName}/catalog/${catalog}/${entityId}`,
+    `${API_URL}/v1/entity/${appName}/${type}/${catalog}/${entityId}`,
     {
       method: 'GET',
       headers: {

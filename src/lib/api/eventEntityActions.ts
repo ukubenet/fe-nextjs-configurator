@@ -8,7 +8,7 @@ interface FormState {
     message: string | null;
   }
   
-export async function createEvent(appName: string, event: string, id?: string, prevState: FormState, formData: FormData) {
+export async function saveEvent(appName: string, event: string, id?: string, prevState: FormState, formData: FormData) {
   try {
     const entityId = id || uuidv4();
 

@@ -1,4 +1,4 @@
-import { Container, Button } from '@mui/material'
+import { Container, Typography, Button } from '@mui/material'
 import Link from 'next/link'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { EventFormContainer } from '@/components/apps/event/EventFormContainer'
@@ -23,6 +23,10 @@ export default async function NewEventPage({ params }: NewEventPageProps) {
           Back to Events
         </Button>
       </Link>
+      <Typography variant="h4" gutterBottom>
+        Add New {decodeURIComponent(event)}
+      </Typography>
+      
       <EventFormContainer 
         appName={appName}
         event={event}

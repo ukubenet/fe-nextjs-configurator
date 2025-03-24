@@ -25,11 +25,6 @@ export function EntityList({ appName, event, eventEntities }: EntityListProps) {
     console.log('Add new event clicked')
   }
   
-  const handleEdit = (id: string) => {
-    // Add edit logic here
-    console.log('Edit clicked for id:', id)
-  }
-
   const handleDelete = (id: string) => {
     // Add delete logic here
     console.log('Delete clicked for id:', id)
@@ -68,9 +63,11 @@ export function EntityList({ appName, event, eventEntities }: EntityListProps) {
       width: 120,
       renderCell: (params) => (
         <>
-          <IconButton onClick={() => handleEdit(params.row.id)}>
-            <EditIcon />
-          </IconButton>
+          <Link href={`/apps/${appName}/run/event/${event}/edit/${params.row.id}`} style={{ textDecoration: 'none' }}>
+            <IconButton>
+              <EditIcon />
+            </IconButton>
+          </Link>
           <IconButton onClick={() => handleDelete(params.row.id)}>
             <DeleteIcon />
           </IconButton>

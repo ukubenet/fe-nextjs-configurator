@@ -5,8 +5,7 @@ import {
   Box, 
   Button, 
   TextField, 
-  Typography, 
-  FormControl, 
+  FormControl,
   InputLabel, 
   Select, 
   MenuItem,
@@ -18,7 +17,7 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
 import { useRouter } from 'next/navigation'
-import { createEvent } from '@/lib/api/eventEntityActions'
+import { saveEvent } from '@/lib/api/eventEntityActions'
 import { useNotification } from '@/contexts/NotificationContext';
 
 interface EntityFormClientProps {
@@ -26,7 +25,7 @@ interface EntityFormClientProps {
   event: string
   metadata: any
   referenceOptions: Record<string, any[]>
-  initialData?: Record<string, any[]>
+  initialData?: Record<string, any>
 }
 interface FormState {
   success: boolean;
@@ -48,8 +47,7 @@ export function EntityFormClient({
     success: false,
     message: ''
   };
-
-  const [state, formAction] = useActionState(createEvent.bind(null, appName, event, initialData?.identifier), initialState);
+  const [state, formAction] = useActionState(saveEvent.bind(null, appName, event, initialData?.identifier), initialState);
 
   useEffect(() => {
     if (state.success) {
@@ -58,8 +56,35 @@ export function EntityFormClient({
     }
   }, [state]);
 
+  const getInitialValue = (fieldName: string, fieldConfig: any) => {
+    if (!initialData || !initialData.attributes) return '';
+    
+    const value = initialData.attributes[fieldName];
+    
+    // Handle reference type fields
+    if (fieldConfig.type === 'reference' && value) {
+      // If the value is already a string, return it
+      if (typeof value === 'string') return value;
+      
+      // Otherwise, create the reference object string
+      const viewData: Record<string, string> = {};
+      fieldConfig.view.forEach((viewField: string) => {
+        viewData[viewField] = value.view?.[viewField] || '';
+      });
+      
+      return JSON.stringify({
+        reference: value.reference,
+        type: "reference",
+        view: viewData
+      });
+    }
+    
+    return value || '';
+  };
 
   const renderFormField = (fieldName: string, fieldConfig: any) => {
+    const initialValue = getInitialValue(fieldName, fieldConfig);
+
     switch (fieldConfig.type) {
       case 'dateTime':
         return (
@@ -67,6 +92,7 @@ export function EntityFormClient({
             <DateTimePicker
               label={fieldName}
               name={fieldName}
+              defaultValue={initialValue ? new Date(initialValue) : null}
               slotProps={{ textField: { fullWidth: true } }}
             />
           </LocalizationProvider>
@@ -78,6 +104,7 @@ export function EntityFormClient({
             label={fieldName}
             name={fieldName}
             type="number"
+            defaultValue={initialValue}
             fullWidth
           />
         )
@@ -90,6 +117,7 @@ export function EntityFormClient({
               labelId={`${fieldName}-label`}
               name={fieldName}
               label={fieldName}
+              defaultValue={initialValue}
               sx={{ minWidth: 250 }}
             >
               <MenuItem value="" disabled>
@@ -134,10 +162,6 @@ export function EntityFormClient({
   
   return (
     <Paper elevation={3} sx={{ p: 3, mt: 2 }}>
-      <Typography variant="h5" gutterBottom>
-        Add New {decodeURIComponent(event)}
-      </Typography>
-      
       <Box component="form" action={formAction} noValidate sx={{ maxWidth: '600px', mx: 'auto' }}>
         <Stack spacing={3} width="100%">
           {metadata?.attributes && Object.entries(metadata.attributes).map(([fieldName, fieldConfig]: [string, any]) => (
