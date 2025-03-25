@@ -11,7 +11,7 @@ export default async function EditCatalogEntityPage({
 }) {
   const { catalog, appName, id } = await params;
   const metadata = await getEntityMetadata(appName, 'catalog', catalog);
-  const entityData = await getEntityById(appName, catalog, id);
+  const entityData = await getEntityById(appName, 'catalog', catalog, id);
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>

@@ -2,11 +2,15 @@
 
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { EventItem } from '@/types/app'
-import { IconButton, Button } from '@mui/material'
+import { IconButton, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation';
+import { useState } from 'react'
+import { useNotification } from '@/contexts/NotificationContext';
+import { deleteEntity } from '@/lib/api/entityActions';
 
 interface EntityListProps {
   appName: string
@@ -21,18 +25,29 @@ interface ReferenceValue {
 }
 
 export function EntityList({ appName, event, eventEntities }: EntityListProps) {
-  const handleAdd = () => {
-    console.log('Add new event clicked')
-  }
-  
-  const handleEdit = (id: string) => {
-    // Add edit logic here
-    console.log('Edit clicked for id:', id)
-  }
+  const [openDialog, setOpenDialog] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const { showNotification } = useNotification();
+  const router = useRouter();
 
-  const handleDelete = (id: string) => {
-    // Add delete logic here
-    console.log('Delete clicked for id:', id)
+  const openDeleteDialog = (id: string) => {
+    setDeleteId(id);
+    setOpenDialog(true);
+  };
+
+  const handleDelete = async () => {
+    if (deleteId) {
+      try {
+        await deleteEntity(appName, 'event', event, deleteId);
+        showNotification(`${event} deleted successfully`, 'success');
+        router.refresh();
+      } catch (error) {
+        showNotification(`Failed to delete ${event}`, 'error');
+        console.error(error);
+      }
+    }
+    setOpenDialog(false);
+    setDeleteId(null);
   }
 
   const generateColumns = (entities: EventItem[]): GridColDef[] => {
@@ -68,10 +83,12 @@ export function EntityList({ appName, event, eventEntities }: EntityListProps) {
       width: 120,
       renderCell: (params) => (
         <>
-          <IconButton onClick={() => handleEdit(params.row.id)}>
-            <EditIcon />
-          </IconButton>
-          <IconButton onClick={() => handleDelete(params.row.id)}>
+          <Link href={`/apps/${appName}/run/event/${event}/edit/${params.row.id}`} style={{ textDecoration: 'none' }}>
+            <IconButton>
+              <EditIcon />
+            </IconButton>
+          </Link>
+          <IconButton onClick={() => openDeleteDialog(params.row.id)}>
             <DeleteIcon />
           </IconButton>
         </>
@@ -111,7 +128,6 @@ export function EntityList({ appName, event, eventEntities }: EntityListProps) {
         <Button
             variant="contained"
             startIcon={<AddIcon />}
-            onClick={handleAdd}
             sx={{ mb: 2 }}
           >
             Add Event
@@ -130,6 +146,19 @@ export function EntityList({ appName, event, eventEntities }: EntityListProps) {
           }}
         />
       </div>
+
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent>
+          {`Are you sure you want to delete this ${event} event?`}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+          <Button onClick={handleDelete} color="error" variant="contained">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

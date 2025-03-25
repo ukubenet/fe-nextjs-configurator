@@ -2,15 +2,20 @@ import { EntityFormClient } from '@/components/apps/event/EntityFormClient'
 import { getEntityMetadata } from '@/lib/api/entityMetadata'
 import { getAllCatalogEntities } from '@/lib/api/catalog';
 import { getAllEventEntities } from '@/lib/api/event';
+import { getEntityById } from '@/lib/api/entityActions'
 
 interface EventFormContainerProps {
   appName: string
   event: string
+  entityId?: string
 }
 
-export async function EventFormContainer({ appName, event }: EventFormContainerProps) {
+export async function EventFormContainer({ appName, event, entityId }: EventFormContainerProps) {
   const metadata = await getEntityMetadata(appName, 'event', event);
-  
+  let eventData = null;
+  if (entityId) {
+    eventData = await getEntityById(appName, 'event', event, entityId)
+  }
   const referenceOptions: Record<string, any[]> = {}
 
   if (metadata?.attributes) {
@@ -42,6 +47,7 @@ export async function EventFormContainer({ appName, event }: EventFormContainerP
       event={event}
       metadata={metadata}
       referenceOptions={referenceOptions}
+      initialData={eventData}
     />
   )
 }
