@@ -41,9 +41,9 @@ export async function saveEntity(appName: string, catalog: string, id?: string, 
 	return {success: true, message: 'Entity was saved successfully!'};
 }
 
-export async function deleteEntity(appName: string, catalog: string, entityId: string) {
+export async function deleteEntity(appName: string, type: string, entityName: string, entityId: string) {
   const response = await fetch(
-    `${API_URL}/v1/entity/${appName}/catalog/${catalog}/${entityId}`,
+    `${API_URL}/v1/entity/${appName}/${type}/${entityName}/${entityId}`,
     {
       method: 'DELETE',
       headers: {
@@ -57,9 +57,9 @@ export async function deleteEntity(appName: string, catalog: string, entityId: s
   }
 }
 
-export async function getEntityById(appName: string, type: string, catalog: string, entityId: string) {
+export async function getEntityById(appName: string, type: string, entityName: string, entityId: string) {
   const response = await fetch(
-    `${API_URL}/v1/entity/${appName}/${type}/${catalog}/${entityId}`,
+    `${API_URL}/v1/entity/${appName}/${type}/${entityName}/${entityId}`,
     {
       method: 'GET',
       headers: {

@@ -20,7 +20,7 @@ export function EntityActions({ entityId, appName, catalog }: EntityActionsProps
 
   const handleDelete = async () => {
     try {
-      await deleteEntity(appName, catalog, entityId);
+      await deleteEntity(appName, 'catalog', catalog, entityId);
       showNotification(`${catalog} deleted successfully`, 'success');
       router.refresh();
     } catch (error) {
