@@ -17,6 +17,8 @@ import {
 } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import Link from 'next/link'
+import { API_ENDPOINTS, fetchApi } from '@/config/api';
+import { Metadata } from '@/types/app';
 
 export default async function CatalogPage({
   params,
@@ -25,7 +27,8 @@ export default async function CatalogPage({
 }) {
   const { catalog, appName } = await params;
   const catalogEntities: CatalogItem[] = await getAllCatalogEntities(appName, catalog);
-  const attributeKeys = Object.keys(catalogEntities[0]?.attributes || {});
+  const entityMetadata: Metadata = await (await fetchApi(API_ENDPOINTS.METADATA_ENTITY_GET(appName, "catalog", catalog))).json();
+  const attributeKeys = Object.keys(entityMetadata.attributes ?? {});
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
@@ -61,7 +64,7 @@ export default async function CatalogPage({
             </TableRow>
           </TableHead>
           <TableBody>
-            {catalogEntities.map((item) => (
+            {catalogEntities?.map((item) => (
               <TableRow key={item.identifier}>
                 {attributeKeys.map((key) => (
                   <TableCell key={key}>

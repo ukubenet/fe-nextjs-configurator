@@ -109,6 +109,17 @@ export function EntityFormClient({
           />
         )
         
+      case 'integer':
+        return (
+          <TextField
+            label={fieldName}
+            name={fieldName}
+            type="number"
+            defaultValue={initialValue}
+            fullWidth
+          />
+        )
+
       case 'reference':
         return (
           <FormControl fullWidth>

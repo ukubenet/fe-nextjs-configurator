@@ -3,7 +3,7 @@ import { Metadata } from '@/types/app';
 import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { useAppContext } from './AppContext';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function MetadataAttributeReference(
     { attribute, index, setEntity }: 
@@ -14,6 +14,13 @@ function MetadataAttributeReference(
  const [referenceType, setReferenceType] = useState(attribute[1].referenceType || "catalog");
  const [referenceEntity, setReferenceEntity] = useState(attribute[1].reference || "");
  const [selectedAttributes, setSelectedAttributes] = useState<string[]>(attribute[1].view || []);
+
+  // Sync state when attribute changes
+  useEffect(() => {
+    setReferenceType(attribute[1].referenceType || "catalog");
+    setReferenceEntity(attribute[1].reference || "");
+    setSelectedAttributes(attribute[1].view || []);
+ }, [attribute]);
 
   // Fetch list of reference entities based on referenceType
  const { data: referenceEntities = [], isLoading: isLoadingEntities, isError: isErrorFetchEntities } = useQuery({
@@ -47,6 +54,9 @@ function MetadataAttributeReference(
     setEntity(prev => {
       const updatedAttributes = [...prev.attributes];
       updatedAttributes[index][1].referenceType = newValue;
+      updatedAttributes[index][1].reference = undefined;
+      updatedAttributes[index][1].view = [];
+      console.log(updatedAttributes);
       return { ...prev, attributes: updatedAttributes };
     });
   };
@@ -57,8 +67,11 @@ function MetadataAttributeReference(
     setReferenceEntity(newValue);
     setSelectedAttributes([]);
     setEntity(prev => {
-      const updatedAttributes = [...prev.attributes];   
+      const updatedAttributes = [...prev.attributes];
+      updatedAttributes[index][1].referenceType = referenceType;
       updatedAttributes[index][1].reference = newValue;
+      updatedAttributes[index][1].view = [];
+      console.log(updatedAttributes);
       return { ...prev, attributes: updatedAttributes };
     });
   };
@@ -70,6 +83,7 @@ function MetadataAttributeReference(
     setEntity (prev => {
       const updatedAttributes = [...prev.attributes];
       updatedAttributes[index][1].view = newValue;
+      console.log(updatedAttributes);
       return { ...prev, attributes: updatedAttributes };
     });
 };
