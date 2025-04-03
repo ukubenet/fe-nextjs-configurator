@@ -23,9 +23,9 @@ export interface EventItem {
 export interface Metadata {
     entityName: string,
     attributes: [string, any][],
-    templates: any,
-    search: any,
-    transactions: any,
+    // templates: string,
+    // search: any,
+    // transactions: [],
 };
 
 export type EditMode = 'edit' | 'add'

@@ -19,6 +19,7 @@ export const API_ENDPOINTS = {
   METADATA: (appName: string, entityType: string, entityName: string) => `${API_BASE_URL}/v1/metadata/api/${appName}/${entityType}/${entityName}`,
   METADATA_ENTITY_GET: (appName: string, entityType: string, entityName: string) => `${API_BASE_URL}/v1/metadata/api/get/${appName}/${entityType}/${entityName}`,
   METADATA_COPY: (appName: string, entityType: string, entityName: string) => `${API_BASE_URL}/v1/metadata/api/copy/${appName}/${entityType}/${entityName}`,
+  METADATA_PUT: (appName: string, entityType: string) => `${API_BASE_URL}/v1/metadata/api/${appName}/${entityType}`,
 }; 
 
 export const fetchApi = async (url: string, options: RequestInit = {}): Promise<Response> => {

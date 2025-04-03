@@ -51,7 +51,7 @@ export function EntityList({ appName, event, eventEntities }: EntityListProps) {
   }
 
   const generateColumns = (entities: EventItem[]): GridColDef[] => {
-    if (entities.length === 0) return [];
+    if (!entities || entities.length === 0) return [];
 
     const columns: GridColDef[] = [
       { field: 'id', headerName: 'ID', width: 90 },
@@ -99,6 +99,8 @@ export function EntityList({ appName, event, eventEntities }: EntityListProps) {
   };
 
   const generateRows = (entities: EventItem[]) => {
+    if (!entities || entities.length === 0) return [];
+    
     return entities.map(entity => {
       const row: any = {
         id: entity.identifier,
