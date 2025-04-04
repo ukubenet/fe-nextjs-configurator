@@ -2,10 +2,12 @@
 
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { EventItem } from '@/types/app'
-import { IconButton, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material'
+import { IconButton, Button, Dialog, DialogTitle, DialogContent, DialogActions, Tooltip } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
+import PublishIcon from '@mui/icons-material/Publish'
+import UndoIcon from '@mui/icons-material/Undo'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import { useState } from 'react'
@@ -50,6 +52,30 @@ export function EntityList({ appName, event, eventEntities }: EntityListProps) {
     setDeleteId(null);
   }
 
+  const handlePost = async (id: string) => {
+    try {
+      // Implement the API call to post the entity
+      // await postEntity(appName, 'event', event, id);
+      showNotification(`${event} posted successfully`, 'success');
+      router.refresh();
+    } catch (error) {
+      showNotification(`Failed to post ${event}`, 'error');
+      console.error(error);
+    }
+  }
+
+  const handleRevert = async (id: string) => {
+    try {
+      // Implement the API call to revert the entity
+      // await revertEntity(appName, 'event', event, id);
+      showNotification(`${event} reverted successfully`, 'success');
+      router.refresh();
+    } catch (error) {
+      showNotification(`Failed to revert ${event}`, 'error');
+      console.error(error);
+    }
+  }
+
   const generateColumns = (entities: EventItem[]): GridColDef[] => {
     if (!entities || entities.length === 0) return [];
 
@@ -80,19 +106,59 @@ export function EntityList({ appName, event, eventEntities }: EntityListProps) {
     columns.push({
       field: 'actions',
       headerName: 'Actions',
-      width: 120,
-      renderCell: (params) => (
-        <>
-          <Link href={`/apps/${appName}/run/event/${event}/edit/${params.row.id}`} style={{ textDecoration: 'none' }}>
-            <IconButton>
-              <EditIcon />
-            </IconButton>
-          </Link>
-          <IconButton onClick={() => openDeleteDialog(params.row.id)}>
-            <DeleteIcon />
-          </IconButton>
-        </>
-      ),
+      width: 150,
+      renderCell: (params) => {
+        const isPosted = params.row.isPosted;
+        
+        return (
+          <>
+            {isPosted ? (
+              <Tooltip title="Cannot edit posted events">
+                <span>
+                  <IconButton disabled>
+                    <EditIcon color="disabled" />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            ) : (
+              <Link href={`/apps/${appName}/run/event/${event}/edit/${params.row.id}`} style={{ textDecoration: 'none' }}>
+                <Tooltip title="Edit">
+                  <IconButton>
+                    <EditIcon />
+                  </IconButton>
+                </Tooltip>
+              </Link>
+            )}
+            
+            <Tooltip title={isPosted ? "Cannot delete posted events" : "Delete"}>
+              <span>
+                <IconButton 
+                  onClick={() => !isPosted && openDeleteDialog(params.row.id)} 
+                  disabled={isPosted}
+                >
+                  <DeleteIcon color={isPosted ? "disabled" : "inherit"} />
+                </IconButton>
+              </span>
+            </Tooltip>
+            
+            {!isPosted && (
+              <Tooltip title="Post">
+                <IconButton onClick={() => handlePost(params.row.id)}>
+                  <PublishIcon />
+                </IconButton>
+              </Tooltip>
+            )}
+            
+            {isPosted && (
+              <Tooltip title="Revert">
+                <IconButton onClick={() => handleRevert(params.row.id)}>
+                  <UndoIcon />
+                </IconButton>
+              </Tooltip>
+            )}
+          </>
+        );
+      },
     });
 
     return columns;
@@ -104,7 +170,8 @@ export function EntityList({ appName, event, eventEntities }: EntityListProps) {
     return entities.map(entity => {
       const row: any = {
         id: entity.identifier,
-        EventTime: entity.attributes.EventTime
+        EventTime: entity.attributes.EventTime,
+        isPosted: entity.isPosted
       };
 
       Object.entries(entity.attributes).forEach(([key, value]) => {
