@@ -52,26 +52,26 @@ export function EntityList({ appName, event, eventEntities }: EntityListProps) {
     setDeleteId(null);
   }
 
-  const handlePost = async (id: string) => {
+  const handleClose = async (id: string) => {
     try {
-      // Implement the API call to post the entity
-      // await postEntity(appName, 'event', event, id);
-      showNotification(`${event} posted successfully`, 'success');
+      // Implement the API call to close the entity
+      // await closeEntity(appName, 'event', event, id);
+      showNotification(`${event} closed successfully`, 'success');
       router.refresh();
     } catch (error) {
-      showNotification(`Failed to post ${event}`, 'error');
+      showNotification(`Failed to close ${event}`, 'error');
       console.error(error);
     }
   }
 
-  const handleRevert = async (id: string) => {
+  const handleReopen = async (id: string) => {
     try {
-      // Implement the API call to revert the entity
-      // await revertEntity(appName, 'event', event, id);
-      showNotification(`${event} reverted successfully`, 'success');
+      // Implement the API call to reopen the entity
+      // await reopenEntity(appName, 'event', event, id);
+      showNotification(`${event} reopened successfully`, 'success');
       router.refresh();
     } catch (error) {
-      showNotification(`Failed to revert ${event}`, 'error');
+      showNotification(`Failed to reopen ${event}`, 'error');
       console.error(error);
     }
   }
@@ -108,12 +108,11 @@ export function EntityList({ appName, event, eventEntities }: EntityListProps) {
       headerName: 'Actions',
       width: 150,
       renderCell: (params) => {
-        const isPosted = params.row.isPosted;
-        
+        const isClosed = params.row.isClosed;
         return (
           <>
-            {isPosted ? (
-              <Tooltip title="Cannot edit posted events">
+            {isClosed ? (
+              <Tooltip title="Cannot edit closed events">
                 <span>
                   <IconButton disabled>
                     <EditIcon color="disabled" />
@@ -130,28 +129,28 @@ export function EntityList({ appName, event, eventEntities }: EntityListProps) {
               </Link>
             )}
             
-            <Tooltip title={isPosted ? "Cannot delete posted events" : "Delete"}>
+            <Tooltip title={isClosed ? "Cannot delete closed events" : "Delete"}>
               <span>
                 <IconButton 
-                  onClick={() => !isPosted && openDeleteDialog(params.row.id)} 
-                  disabled={isPosted}
+                  onClick={() => !isClosed && openDeleteDialog(params.row.id)} 
+                  disabled={isClosed}
                 >
-                  <DeleteIcon color={isPosted ? "disabled" : "inherit"} />
+                  <DeleteIcon color={isClosed ? "disabled" : "inherit"} />
                 </IconButton>
               </span>
             </Tooltip>
             
-            {!isPosted && (
-              <Tooltip title="Post">
-                <IconButton onClick={() => handlePost(params.row.id)}>
+            {!isClosed && (
+              <Tooltip title="Close">
+                <IconButton onClick={() => handleClose(params.row.id)}>
                   <PublishIcon />
                 </IconButton>
               </Tooltip>
             )}
             
-            {isPosted && (
-              <Tooltip title="Revert">
-                <IconButton onClick={() => handleRevert(params.row.id)}>
+            {isClosed && (
+              <Tooltip title="Reopen">
+                <IconButton onClick={() => handleReopen(params.row.id)}>
                   <UndoIcon />
                 </IconButton>
               </Tooltip>
@@ -171,7 +170,7 @@ export function EntityList({ appName, event, eventEntities }: EntityListProps) {
       const row: any = {
         id: entity.identifier,
         EventTime: entity.attributes.EventTime,
-        isPosted: entity.isPosted
+        isClosed: entity.isClosed
       };
 
       Object.entries(entity.attributes).forEach(([key, value]) => {

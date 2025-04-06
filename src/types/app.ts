@@ -16,7 +16,7 @@ export interface EventItem {
   entityName: string;
   entityType: number;
   identifier: string;
-  isPosted: boolean;
+  isClosed: boolean;
   attributes: Record<string, string>;
   transactions: null;
 }
