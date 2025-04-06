@@ -30,7 +30,7 @@ export default async function AppPage({
       </Link>
 
       <Typography variant="h4" gutterBottom>
-        {resolvedParams.appName}, CONFIG
+        {decodeURIComponent(resolvedParams.appName)}, CONFIG
       </Typography>
 
       <Box sx={{ mb: 8 }}>
