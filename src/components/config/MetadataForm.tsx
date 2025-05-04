@@ -1,11 +1,9 @@
 "use client"
 import { Metadata } from '@/types/app';
 
-
 import {
   Box,
   Button,
-  Paper,
   TextField,
   Typography
 } from '@mui/material';
@@ -14,7 +12,7 @@ import MetadataAttributes from './MetadataAttributes';
 import { AppProvider } from './AppContext';
 import { API_ENDPOINTS, fetchApi } from '@/config/api';
 import { useRouter } from 'next/navigation';
-
+import Editor from '@monaco-editor/react';
 
 function MetadataForm({ appName, entityType, attributeTypes, setEntity, entity, mode }: { 
   appName: string; 
@@ -33,6 +31,13 @@ function MetadataForm({ appName, entityType, attributeTypes, setEntity, entity, 
     setEntity(prev => ({
       ...prev,
       entityName: value
+    }));
+  };
+
+  const handleProcessorChange = (value: string | undefined) => {
+    setEntity(prev => ({
+      ...prev,
+      processor: value || ""
     }));
   };
 
@@ -87,6 +92,26 @@ function MetadataForm({ appName, entityType, attributeTypes, setEntity, entity, 
               entity={entity}
               attributeTypes={attributeTypes}
           /> 
+          {entityType === "event" && (
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="subtitle1" gutterBottom>
+                Processor Code
+              </Typography>
+              <Box sx={{ border: 1, borderColor: 'grey.300', borderRadius: 1, overflow: 'hidden' }}>
+                <Editor
+                  height="300px"
+                  defaultLanguage="javascript"
+                  value={entity.processor || ""}
+                  onChange={handleProcessorChange}
+                  options={{
+                    minimap: { enabled: false },
+                    scrollBeyondLastLine: false,
+                    fontSize: 14,
+                  }}
+                />
+              </Box>
+            </Box>
+          )}
           <Button
             type="submit"
             variant="contained"
