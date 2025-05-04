@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react'
 import { useNotification } from '@/contexts/NotificationContext';
 import { deleteEntity } from '@/lib/api/entityActions';
+import { closeEntity, reopenEntity } from '@/lib/api/eventEntityActions';
 
 interface EntityListProps {
   appName: string
@@ -55,10 +56,13 @@ export function EntityList({ appName, event, eventEntities }: EntityListProps) {
 
   const handleClose = async (id: string) => {
     try {
-      // Implement the API call to close the entity
-      // await closeEntity(appName, 'event', event, id);
-      showNotification(`${event} closed successfully`, 'success');
-      router.refresh();
+      const result = await closeEntity(appName, 'event', event, id);
+      if (result.success) {
+        showNotification(result.message, 'success');
+        router.refresh();
+      } else {
+        showNotification(result.message, 'error');
+      }
     } catch (error) {
       showNotification(`Failed to close ${event}`, 'error');
       console.error(error);
@@ -67,10 +71,13 @@ export function EntityList({ appName, event, eventEntities }: EntityListProps) {
 
   const handleReopen = async (id: string) => {
     try {
-      // Implement the API call to reopen the entity
-      // await reopenEntity(appName, 'event', event, id);
-      showNotification(`${event} reopened successfully`, 'success');
-      router.refresh();
+      const result = await reopenEntity(appName, 'event', event, id);
+      if (result.success) {
+        showNotification(result.message, 'success');
+        router.refresh();
+      } else {
+        showNotification(result.message, 'error');
+      }
     } catch (error) {
       showNotification(`Failed to reopen ${event}`, 'error');
       console.error(error);

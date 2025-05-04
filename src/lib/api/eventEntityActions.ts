@@ -2,6 +2,9 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import { revalidatePath } from 'next/cache'
+import { API_ENDPOINTS, fetchApi } from '@/config/api'
+import { getEntityMetadata } from './entityMetadata'
+import { getEntityById } from './entityActions'
 
 interface FormState {
     success: boolean;
@@ -104,5 +107,73 @@ export async function saveEvent(appName: string, event: string, id?: string, pre
       success: false, 
       message: 'Failed to create entity. Please try again.' 
     }
+  }
+}
+
+export async function closeEntity(appName: string, entityType: string, eventName: string, entityId: string) {
+  try {
+    // 1. Get the entity metadata (to access the processor code)
+    const metadata = await getEntityMetadata(appName, entityType, eventName)
+    console.log('Metadata:', metadata);
+    // 2. Get the entity data
+    const entityData = await getEntityById(appName, entityType, eventName, entityId)
+    console.log('Entity Data:', entityData);
+    // 3. Perform calculations using the processor code if available
+    let calculationResults = {}
+    if (metadata?.processor) {
+      try {
+        // Create a safe execution environment for the processor code
+        const processorFunction = new Function('data', metadata.processor)
+        calculationResults = processorFunction(entityData)
+      } catch (processorError) {
+        console.error('Error executing processor code:', processorError)
+        throw new Error('Failed to execute processor code')
+      }
+    }
+    
+    // 4. Call the API to close the entity with calculation results
+    const response = await fetchApi(
+      API_ENDPOINTS.CLOSE_ENTITY(appName, entityType, eventName, entityId),
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          calculationResults
+        })
+      }
+    )
+    
+    if (!response.ok) {
+      throw new Error('Failed to close entity')
+    }
+    
+    // 5. Revalidate the path to refresh the data
+    revalidatePath(`/apps/${appName}/run/event/${eventName}`)
+    
+    return { success: true, message: `${eventName} closed successfully` }
+  } catch (error) {
+    console.error('Error closing entity:', error)
+    return { success: false, message: error instanceof Error ? error.message : 'An unknown error occurred' }
+  }
+}
+
+export async function reopenEntity(appName: string, entityType: string, eventName: string, entityId: string) {
+  try {
+    const response = await fetchApi(
+      API_ENDPOINTS.REOPEN_ENTITY(appName, entityType, eventName, entityId),
+      {
+        method: 'POST'
+      }
+    )
+    
+    if (!response.ok) {
+      throw new Error('Failed to reopen entity')
+    }
+    
+    revalidatePath(`/apps/${appName}/run/event/${eventName}`)
+    
+    return { success: true, message: `${eventName} reopened successfully` }
+  } catch (error) {
+    console.error('Error reopening entity:', error)
+    return { success: false, message: error instanceof Error ? error.message : 'An unknown error occurred' }
   }
 }
