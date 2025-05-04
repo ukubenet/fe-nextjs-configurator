@@ -8,6 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
 import PublishIcon from '@mui/icons-material/Publish'
 import UndoIcon from '@mui/icons-material/Undo'
+import VisibilityIcon from '@mui/icons-material/Visibility'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import { useState } from 'react'
@@ -106,11 +107,19 @@ export function EntityList({ appName, event, eventEntities }: EntityListProps) {
     columns.push({
       field: 'actions',
       headerName: 'Actions',
-      width: 150,
+      width: 200,
       renderCell: (params) => {
         const isClosed = params.row.isClosed;
         return (
           <>
+            <Link href={`/apps/${appName}/run/event/${event}/view/${params.row.id}`} style={{ textDecoration: 'none' }}>
+              <Tooltip title="View">
+                <IconButton>
+                  <VisibilityIcon />
+                </IconButton>
+              </Tooltip>
+            </Link>
+            
             {isClosed ? (
               <Tooltip title="Cannot edit closed events">
                 <span>
