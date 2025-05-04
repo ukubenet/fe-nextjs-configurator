@@ -1,6 +1,5 @@
 import AppList from "@/components/apps/AppList";
 import { API_ENDPOINTS, getSingleColumn } from "@/config/api";
-import { toast } from "react-toastify";
 
 export default async function Home() {
   const rows = await getSingleColumn(API_ENDPOINTS.APP); 

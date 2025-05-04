@@ -24,9 +24,10 @@ export interface EventItem {
 export interface Metadata {
     entityName: string,
     attributes: [string, any][],
+    processor: string,
     // templates: string,
     // search: any,
     // transactions: [],
-};
+}
 
 export type EditMode = 'edit' | 'add'
