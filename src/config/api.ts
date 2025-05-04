@@ -20,6 +20,11 @@ export const API_ENDPOINTS = {
   METADATA_ENTITY_GET: (appName: string, entityType: string, entityName: string) => `${API_BASE_URL}/v1/metadata/api/get/${appName}/${entityType}/${entityName}`,
   METADATA_COPY: (appName: string, entityType: string, entityName: string) => `${API_BASE_URL}/v1/metadata/api/copy/${appName}/${entityType}/${entityName}`,
   METADATA_PUT: (appName: string, entityType: string) => `${API_BASE_URL}/v1/metadata/api/${appName}/${entityType}`,
+  // Todo: Update to have real endpoints for CLOSE_ENTITY and REOPEN_ENTITY
+  CLOSE_ENTITY: (appName: string, entityType: string, eventName: string, entityId: string) => 
+    `/api/apps/${appName}/${entityType}/${eventName}/${entityId}/close`,
+  REOPEN_ENTITY: (appName: string, entityType: string, eventName: string, entityId: string) => 
+    `/api/apps/${appName}/${entityType}/${eventName}/${entityId}/reopen`,
 }; 
 
 export const fetchApi = async (url: string, options: RequestInit = {}): Promise<Response> => {
